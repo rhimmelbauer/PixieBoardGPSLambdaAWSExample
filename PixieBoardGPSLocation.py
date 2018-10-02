@@ -1,18 +1,18 @@
 import subprocess
 
+PIXIE_BOARDS_PASSWORD = "pixiepro"
+COMMAND_OK_CALLBACK = "OK"
+ENABLE_AT_COMMAND = "echo 'ATE1' | socat - /dev/ttyUSB2,cr"
+SESSION_STATUS = "echo 'AT+QGPS?' | socat - /dev/ttyUSB2,cr | grep '+QGPS:'"
+STOP_SESSION = "echo 'AT+QGPSEND' | socat - /dev/ttyUSB2,cr"
+CONFIGURE_GPS_TRACKING = "echo 'AT+QGPS=1,30,50,0,1' | socat - /dev/ttyUSB2,cr"
+GET_GPS_LOCATION = "echo 'AT+QGPSLOC?' | socat - /dev/ttyUSB2,cr"
+GET_GPS_LOCATION_PRETTY = "echo 'AT+QGPSLOC=2' | socat - /dev/ttyUSB2,cr"
+
 
 class PixieBoardGPSLocation():		
 
 	def __init__(self):
-
-		self.PIXIE_BOARDS_PASSWORD = "pixiepro"
-		self.COMMAND_OK_CALLBACK = "OK"
-		self.ENABLE_AT_COMMAND = "echo 'ATE1' | socat - /dev/ttyUSB2,cr"
-		self.SESSION_STATUS = "echo 'AT+QGPS?' | socat - /dev/ttyUSB2,cr | grep '+QGPS:'"
-		self.STOP_SESSION = "echo 'AT+QGPSEND' | socat - /dev/ttyUSB2,cr"
-		self.CONFIGURE_GPS_TRACKING = "echo 'AT+QGPS=1,30,50,0,1' | socat - /dev/ttyUSB2,cr"
-		self.GET_GPS_LOCATION = "echo 'AT+QGPSLOC?' | socat - /dev/ttyUSB2,cr"
-		self.GET_GPS_LOCATION_PRETTY = "echo 'AT+QGPSLOC=2' | socat - /dev/ttyUSB2,cr"
 
 		self.ModemStatus = ""
 
@@ -37,7 +37,7 @@ class PixieBoardGPSLocation():
 		else:
 			return False, command_output, error
 
-	def StopSession(self, shell_command=self.STOP_SESSION):
+	def StopSession(self, shell_command=STOP_SESSION):
 		sessionStatus, sessionOutput, sessionError = self.SessionStatus()
 		if sessionStatus:
 			(command_output, error) = self.SendShellCommand(shell_command)
@@ -48,7 +48,7 @@ class PixieBoardGPSLocation():
 		else:
 			return False, sessionOutput, sessionError
 
-	def SessionStatus(self, shell_command=self.SESSION_STATUS):
+	def SessionStatus(self, shell_command=SESSION_STATUS):
 		(command_output, error) = self.SendShellCommand(shell_command)
 		if (str(command_output)[-4:-3]) == "1":
 			return True, command_output, error
@@ -56,14 +56,14 @@ class PixieBoardGPSLocation():
 			return False, command_output, error
 
 
-	def ConfigureGPSTracking(self, shell_command=self.CONFIGURE_GPS_TRACKING):
+	def ConfigureGPSTracking(self, shell_command=CONFIGURE_GPS_TRACKING):
 		(command_output, error) = self.SendShellCommand(shell_command)
 		if self.ParseOKInMsg(command_output):
 			return True, command_output, error
 		else:
 			return False, command_output, error
 
-	def GetGPSLocation(self, shell_command=self.GET_GPS_LOCATION):
+	def GetGPSLocation(self, shell_command=GET_GPS_LOCATION):
 		(command_output, error) = self.SendShellCommand(shell_command)
 		if self.ParseOKInMsg(command_output):
 			self.ParseGPSLocation(command_output)
@@ -71,7 +71,7 @@ class PixieBoardGPSLocation():
 		else:
 			return False, command_output, error
 
-	def GetGPSLocationPretty(self, shell_command=self.GET_GPS_LOCATION_PRETTY):
+	def GetGPSLocationPretty(self, shell_command=GET_GPS_LOCATION_PRETTY):
 		(command_output, error) = self.SendShellCommand(shell_command)
 		if self.ParseOKInMsg(command_output):
 			self.ParseGPSLocation(command_output)
