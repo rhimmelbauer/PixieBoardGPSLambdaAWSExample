@@ -1,5 +1,6 @@
 from PixieBoardGPSLocation import PixieBoardGPSLocation
 import requests, json
+import time
 
 LOGGING_MSG_EXP_PING_TIMOUT = "Time Out"
 LOGGING_MSG_EXP_REQUEST_EXCEPTION = "Request Exception"
@@ -38,9 +39,14 @@ def LocationLoop():
 		sessionStoped, raw, error = pxbdGPSLocation.ConfigureGPSTracking()
 		print(raw)
 	print("Get Location")
-	sessionStoped, raw, error = pxbdGPSLocation.GetGPSLocationPretty()
-	print(raw)
-	print("lat: {}, lng: {}".format(pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude))
-	SendLocation(PIXIE_BOARD_ID, pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude)
+	while True:
+		sessionStoped, raw, error = pxbdGPSLocation.GetGPSLocationPretty()
+		if sessionStoped:
+			SendLocation(PIXIE_BOARD_ID, pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude)
+			print("Location Sent")
+			break
+		else:
+			time.sleep(8)
+		
 
 LocationLoop()
