@@ -30,12 +30,16 @@ def SendLocation(pixieboard_id, lat, lng):
 def LocationLoop():
 	print("Start")
 	pxbdGPSLocation = PixieBoardGPSLocation()
-	pxbdGPSLocation.EnableATCommands()
+	sessionStoped, raw, error = pxbdGPSLocation.EnableATCommands()
+	print(raw)
 	sessionStoped, raw, error = pxbdGPSLocation.StopSession()
+	print(raw)
 	if sessionStoped:
-		pxbdGPSLocation.ConfigureGPSTracking()
+		sessionStoped, raw, error = pxbdGPSLocation.ConfigureGPSTracking()
+		print(raw)
 	print("Get Location")
-	pxbdGPSLocation.GetGPSLocationPretty()
+	sessionStoped, raw, error = pxbdGPSLocation.GetGPSLocationPretty()
+	print(raw)
 	print("lat: {}, lng: {}".format(pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude))
 	SendLocation(PIXIE_BOARD_ID, pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude)
 
