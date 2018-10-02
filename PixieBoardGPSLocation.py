@@ -81,7 +81,7 @@ class PixieBoardGPSLocation():
 
 	def SendShellCommand(self, shellCommand):
 		command = subprocess.Popen([shellCommand], stdout=subprocess.PIPE, shell=True)
-		(command_output, error) = command.communicate(self.PIXIE_BOARDS_PASSWORD)
+		(command_output, error) = command.communicate(PIXIE_BOARDS_PASSWORD)
 		return command_output, error
 
 	def ParseGPSLocation(self, command_output):
