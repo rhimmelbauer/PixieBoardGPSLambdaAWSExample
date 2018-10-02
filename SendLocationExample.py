@@ -8,11 +8,16 @@ LOGGING_MSG_EXP_CONN_ERROR = "ConnectionError: "
 
 API_GATEWAY = "https://k2j1e9ygt0.execute-api.us-west-1.amazonaws.com/prod/storelocation"
 
-PIXIE_BOARD_ID = 117
+PIXIE_BOARD_ID = 113
 
-def setLocationServer(pixieboard_id, lat, lng):
+def SendLocation(pixieboard_id, lat, lng):
 	try:
-		response = requests.get(SERVER + SET_LOCATION + str(pk) + "/" + str(lat) + "/" + str(lng))
+		print("Send data")
+		url = API_GATEWAY
+		data = {'PixieBoardsLocation': { 'PixieBoardID': pixieboard_id, 'Latitude': lat, 'Longitude': lng} 
+		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+		r = requests.post(url, data=json.dumps(data), headers=headers)		
+		print(r.text)
 	except requests.exceptions.Timeout:
 		print(LOGGING_MSG_EXP_PING_TIMOUT)
 	except requests.exceptions.RequestException as e:
@@ -22,6 +27,17 @@ def setLocationServer(pixieboard_id, lat, lng):
 	except requests.exceptions.ConnectionError as err:
 		print(LOGGING_MSG_EXP_CONN_ERROR + "%s",err)
 
-
+def main():
+	print("Start")
+	pxbdGPSLocation = PixieBoardGPSLocation()
+	pxbdGPSLocation.EnableATCommands()
+	sessionStoped, raw, error = pxbdGPSLocation.StopSession()
+	if sessionStoped:
+		pxbdGPSLocation.ConfigureGPSTracking()
+	print("Get Location")
+	pxbdGPSLocation.GetGPSLocationPretty()
+	print("lat: {}, lng: {}".format(pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude))
+	SendLocation(PIXIE_BOARD_ID, pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude)
 
 if __name__ == "main":
+	main()
