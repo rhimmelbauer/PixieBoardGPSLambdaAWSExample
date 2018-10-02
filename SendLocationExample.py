@@ -14,7 +14,7 @@ def SendLocation(pixieboard_id, lat, lng):
 	try:
 		print("Send data")
 		url = API_GATEWAY
-		data = {'PixieBoardsLocation': { 'PixieBoardID': pixieboard_id, 'Latitude': lat, 'Longitude': lng} 
+		data = {'PixieBoardsLocation': { 'PixieBoardID': pixieboard_id, 'Latitude': lat, 'Longitude': lng}} 
 		headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 		r = requests.post(url, data=json.dumps(data), headers=headers)		
 		print(r.text)
@@ -27,7 +27,7 @@ def SendLocation(pixieboard_id, lat, lng):
 	except requests.exceptions.ConnectionError as err:
 		print(LOGGING_MSG_EXP_CONN_ERROR + "%s",err)
 
-def main():
+def LocationLoop():
 	print("Start")
 	pxbdGPSLocation = PixieBoardGPSLocation()
 	pxbdGPSLocation.EnableATCommands()
@@ -39,5 +39,4 @@ def main():
 	print("lat: {}, lng: {}".format(pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude))
 	SendLocation(PIXIE_BOARD_ID, pxbdGPSLocation.Latitude, pxbdGPSLocation.Longitude)
 
-if __name__ == "main":
-	main()
+LocationLoop()
