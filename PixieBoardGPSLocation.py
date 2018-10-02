@@ -100,7 +100,7 @@ class PixieBoardGPSLocation():
 
 	def ParseOKInMsg(self, command_output):
 		output = str(command_output)
-		if self.COMMAND_OK_CALLBACK in output:
+		if COMMAND_OK_CALLBACK in output:
 			return True
 		else:
 			return False
