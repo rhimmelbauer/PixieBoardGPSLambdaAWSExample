@@ -29,7 +29,8 @@ class PixieBoardGPSLocation():
 		self.NumberOfSatellites = ""
 
 
-	def EnableATCommands(self, shell_command=self.ENABLE_AT_COMMAND):
+	def EnableATCommands(self, shell_command=ENABLE_AT_COMMAND):
+		print(shell_command)
 		(command_output, error) = self.SendShellCommand(shell_command)
 		if self.ParseOKInMsg(command_output):
 			return True, command_output, error
